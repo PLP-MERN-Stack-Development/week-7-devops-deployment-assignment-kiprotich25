@@ -1,0 +1,40 @@
+name: Frontend CI
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+    branches: [main, dev]
+  pull_request:
+    paths:
+      - 'frontend/**'
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install deps
+        run: pnpm install
+
+      - name: Run unit tests (optional)
+        run: pnpm test --if-present
+
+      - name: Build frontend
+        run: pnpm build
